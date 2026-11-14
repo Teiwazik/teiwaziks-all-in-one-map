@@ -1,0 +1,6 @@
+engine-tests/target/
+old/
+reference/
+dist/*
+!dist/megamap-0.3.11.hnmod
+!dist/megamap-0.3.11.hmod

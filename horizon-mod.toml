@@ -1,0 +1,10 @@
+id = "megamap"
+name = "Teiwazik's All in One Map"
+version = "0.3.11"
+description = "Minimap and fullscreen world map with waypoints, death points, a breadcrumb trail, exploration fog and a threat radar."
+authors = ["Teiwazik"]
+api = "0.2"
+side = "client"
+# Required for any assets/ in a .hmod (content.rs: "has assets/ or data/ but not capability
+# registries"); megamap registers nothing, it only ships GUI textures. See DESIGN.md, API gaps.
+capabilities = ["registries"]

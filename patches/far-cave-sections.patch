@@ -1,0 +1,26 @@
+--- a/crates/horizon-client-render/src/lod.rs
++++ b/crates/horizon-client-render/src/lod.rs
+@@ -1696,6 +1696,23 @@
+             Some((surface.height, surface.state))
+         })
+     }
++    /// The whole column at block column (x, z) - every material run, the
++    /// gaps between them air - from a finest-level tile only (one cell a
++    /// block). Coarser tiles merge a footprint (`Column::reduced`), which
++    /// fills caves, so they are not offered. Reads only tiles already sampled
++    /// for drawing: never generates or loads a chunk. For the megamap client
++    /// mod's cave layer past loaded chunks.
++    pub fn megamap_column(&self, x: i32, z: i32) -> Option<&Column> {
++        let key = TileKey {
++            x: x.div_euclid(16),
++            z: z.div_euclid(16),
++            level: 0,
++        };
++        let columns = self.ready.get(&key).filter(|c| c.len() == CELLS * CELLS)?;
++        let cell = 16 / CELLS as i32;
++        let (cx, cz) = ((x - key.x * 16) / cell, (z - key.z * 16) / cell);
++        (cell == 1).then(|| &columns[cz as usize * CELLS + cx as usize])
++    }
+     /// Sets the profiler's gauges for every map and queue this holds, once a
+     /// second (`spans::profile`).
+     pub fn profile_gauges(&self) {

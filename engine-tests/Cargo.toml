@@ -1,0 +1,28 @@
+[package]
+name = "megamap-engine-tests"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+# Tests megamap's engine (mixins/megamap/api/src/engine) without the game: the module is included by path.
+[lib]
+path = "src/lib.rs"
+
+[[example]]
+name = "bench"
+
+[profile.release]
+debug = false
+
+[dev-dependencies]
+# The glue inflates the HLOD cache with the flate2 Horizon already links; the tests use the same crate.
+flate2 = "1.1"
+
+[[example]]
+name = "shot"
+
+[[example]]
+name = "abdump"
+
+[[example]]
+name = "detail"

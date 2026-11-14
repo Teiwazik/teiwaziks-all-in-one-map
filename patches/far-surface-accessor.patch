@@ -1,0 +1,27 @@
+--- a/crates/horizon-client-render/src/lod.rs
++++ b/crates/horizon-client-render/src/lod.rs
+@@ -1696,6 +1696,24 @@
+             Some((surface.height, surface.state))
+         })
+     }
++    /// The whole far surface at block column (x, z) as the finest tile
++    /// sampled there keeps it (`ground` plus the fluid face and the biome).
++    /// Reads only tiles already sampled for drawing: never generates or loads
++    /// a chunk. For the megamap client mod's world map past loaded chunks.
++    pub fn megamap_surface(&self, x: i32, z: i32) -> Option<Surface> {
++        (0..=MAX_LEVEL).find_map(|level| {
++            let size = 16 << level;
++            let key = TileKey {
++                x: x.div_euclid(size),
++                z: z.div_euclid(size),
++                level,
++            };
++            let columns = self.ready.get(&key).filter(|c| c.len() == CELLS * CELLS)?;
++            let cell = size / CELLS as i32;
++            let (cx, cz) = ((x - key.x * size) / cell, (z - key.z * size) / cell);
++            columns[cz as usize * CELLS + cx as usize].surface
++        })
++    }
+     /// Sets the profiler's gauges for every map and queue this holds, once a
+     /// second (`spans::profile`).
+     pub fn profile_gauges(&self) {
